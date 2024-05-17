@@ -115,37 +115,3 @@ def get_image_list(pdf_stream):
                 images_list.append({"page":page_num+1,"img_index":i,"seq_num":seq_num,"name":current_images[i][7],"width":current_images[i][2],"height":current_images[i][3],"img":""})
                 seq_num += 1
         return images_list
-
-
-    logging.info("Open the file in a stream.")
-    # Open the PDF file from the stream
-    pdf = pymupdf.Document(stream=pdf_stream, filetype="pdf")
-    pdf_metadata= pdf.metadata
-    pdf_table_of_contents = pdf.get_toc()
-    images_data = []
-    logging.info("Begin iterating the pages.")
-    # Iterate through each page
-    for page_index in range(len(pdf)): # iterate over pdf pages
-        page = pdf[page_index] # get the page
-        image_list = page.get_images()
-
-        # print the number of images found on the page
-        if image_list:
-            print(f"Found {len(image_list)} images on page {page_index}")
-        else:
-            print("No images found on page", page_index)
-
-        for image_index, img in enumerate(image_list, start=1): # enumerate the image list
-            current_image = {}
-            xref = img[0] # get the XREF of the image
-            pix = pymupdf.Pixmap(pdf, xref) # create a Pixmap
-
-            if pix.n - pix.alpha > 3: # CMYK: convert to RGB first
-                pix = pymupdf.Pixmap(pymupdf.csRGB, pix)
-            current_image = {"name":"imb_name","offset":xref,"image_data":"data_here"}
-            images_data.append(pix)
-            #pix.save("page_%s-image_%s.png" % (page_index, image_index)) # save the image as png
-            pix = None
-
-
-    return images_data
