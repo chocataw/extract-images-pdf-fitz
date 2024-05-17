@@ -116,9 +116,7 @@ def get_image_list(pdf_stream):
                 seq_num += 1
         return images_list
 
-       
 
-def process_pdf(pdf_stream):
     logging.info("Open the file in a stream.")
     # Open the PDF file from the stream
     pdf = pymupdf.Document(stream=pdf_stream, filetype="pdf")
